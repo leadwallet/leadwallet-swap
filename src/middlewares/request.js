@@ -5,6 +5,7 @@ module.exports = (req, res, next) => {
   const url = CHANGENOW_API;
   const apiKey = CHANGENOW_API_KEY;
   const options = {
+   simple: false,
    json: true,
    resolveWithFullResponse: true,
    headers: {
