@@ -23,10 +23,19 @@ class API {
    
    // ChangeNow exchange
    const apiResponse = await rp.post(url + "/api/v1/transactions/" + apiKey, {
-    ...options, body
+    ...options,
+    body: {
+     ...body,
+     extraId: "",
+     refundAddress: "",
+     refundExtraId: "",
+     userId: "",
+     payload: "",
+     contactEmail: ""
+    }
    });
 
-   console.log(JSON.stringify(apiResponse));
+   // console.log(JSON.stringify(apiResponse));
 
    // Throw error if API status code is within 4XX and 5XX ranges
    if (apiResponse.statusCode >= 400)
@@ -98,6 +107,107 @@ class API {
    if (apiResponse.statusCode >= 400)
     throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
    
+   // Main response
+   const response = {
+    ...apiResponse.body
+   };
+
+   // Send response
+   res.status(200).json({
+    statusCode: 200,
+    response
+   });
+  } catch (error) {
+   res.status(error.c || 500).json({
+    statusCode: error.c || 500,
+    response: error.message
+   });
+  }
+ }
+
+ static async getMinimalExchangeAmount(req, res) {
+  try {
+   // Get string from request parameter
+   const { from_to } = req.params;
+
+   // Get request object
+   const { url, options } = req.api;
+
+   // Obtain info
+   const apiResponse = await rp.get(url + "/v1/min-amount/" + from_to, { ...options });
+
+   // Throw error if any
+   if (apiResponse.statusCode >= 400)
+    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+
+   // Main response
+   const response = {
+    ...apiResponse.body
+   };
+
+   // Send response
+   res.status(200).json({
+    statusCode: 200,
+    response
+   });
+  } catch (error) {
+   res.status(error.c || 500).json({
+    statusCode: error.c || 500,
+    response: error.message
+   });
+  }
+ }
+
+ static async getEstimatedAmount(req, res) {
+  try {
+   // Get string from request parameter
+   const { from_to, send_amount } = req.params;
+
+   // Get request object
+   const { url, options, apiKey } = req.api;
+
+   // Obtain info
+   const apiResponse = await rp.get(url + "/v1/exchange-amount/" + send_amount + "/" + from_to + `?api_key=${apiKey}`, { ...options });
+
+   // Throw error if any
+   if (apiResponse.statusCode >= 400)
+    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+
+   // Main response
+   const response = {
+    ...apiResponse.body
+   };
+
+   // Send response
+   res.status(200).json({
+    statusCode: 200,
+    response
+   });
+  } catch (error) {
+   res.status(error.c || 500).json({
+    statusCode: error.c || 500,
+    response: error.message
+   });
+  }
+ }
+
+ static async getTransactionStatus(req, res) {
+  try {
+   // Get string from request parameter
+   const { id } = req.params;
+
+   // Get request object
+   const { url, options, apiKey } = req.api;
+
+   // Obtain info
+   const apiResponse = await rp.get(url + "/v1/transactions/" + id + "/" + apiKey, { ...options });
+
+   console.log(apiResponse);
+
+   // Throw error if any
+   if (apiResponse.statusCode >= 400)
+    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+
    // Main response
    const response = {
     ...apiResponse.body
