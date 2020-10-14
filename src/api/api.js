@@ -202,7 +202,7 @@ class API {
    // Obtain info
    const apiResponse = await rp.get(url + "/v1/transactions/" + id + "/" + apiKey, { ...options });
 
-   console.log(apiResponse);
+   // console.log(apiResponse);
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
