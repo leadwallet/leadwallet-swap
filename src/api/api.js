@@ -68,7 +68,7 @@ class API {
    const { url, options } = req.api;
 
    // Obtain list of currencies
-   const apiResponse = await rp.get(url + "/api/v1/currencies?active=true&fixedRate=true", { ...options });
+   const apiResponse = await rp.get(url + "/v1/currencies?active=true&fixedRate=true", { ...options });
 
    // Throw error if API response status range is within 4XX to 5XX
    if (apiResponse.statusCode >= 400)
@@ -101,7 +101,7 @@ class API {
    const { ticker } = req.params;
 
    // Obtain currency info
-   const apiResponse = await rp.get(url + "/api/v1/currencies/" + ticker, { ...options });
+   const apiResponse = await rp.get(url + "/v1/currencies/" + ticker, { ...options });
 
    // Throw error if api response status code is within 4XX or 5XX
    if (apiResponse.statusCode >= 400)
@@ -131,10 +131,10 @@ class API {
    const { from_to } = req.params;
 
    // Get request object
-   const { url, options } = req.api;
+   const { url, options, apiKey } = req.api;
 
    // Obtain info
-   const apiResponse = await rp.get(url + "/v1/min-amount/" + from_to, { ...options });
+   const apiResponse = await rp.get(url + "/v1/min-amount/" + from_to + `?api_key?=${apiKey}`, { ...options });
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
