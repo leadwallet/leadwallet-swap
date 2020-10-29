@@ -22,7 +22,7 @@ class API {
    const body = { from, to, address, amount };
    
    // ChangeNow exchange
-   const apiResponse = await rp.post(url + "/api/v1/transactions/" + apiKey, {
+   const apiResponse = await rp.post(url + "/v1/transactions/" + apiKey, {
     ...options,
     body: {
      ...body,
