@@ -35,7 +35,7 @@ class API {
     }
    });
 
-   // console.log(JSON.stringify(apiResponse));
+   console.log(JSON.stringify(apiResponse));
 
    // Throw error if API status code is within 4XX and 5XX ranges
    if (apiResponse.statusCode >= 400)
