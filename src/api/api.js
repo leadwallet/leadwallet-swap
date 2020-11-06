@@ -39,7 +39,7 @@ class API {
 
    // Throw error if API status code is within 4XX and 5XX ranges
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
    
    // Main response
    const r = {
@@ -72,7 +72,7 @@ class API {
 
    // Throw error if API response status range is within 4XX to 5XX
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
    
    // Main response
    const response = {
@@ -105,7 +105,7 @@ class API {
 
    // Throw error if api response status code is within 4XX or 5XX
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
    
    // Main response
    const response = {
@@ -138,7 +138,7 @@ class API {
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
@@ -171,7 +171,7 @@ class API {
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
@@ -206,7 +206,7 @@ class API {
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
