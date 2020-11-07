@@ -22,7 +22,7 @@ class API {
    const body = { from, to, address, amount };
    
    // ChangeNow exchange
-   const apiResponse = await rp.post(url + "/api/v1/transactions/" + apiKey, {
+   const apiResponse = await rp.post(url + "/v1/transactions/" + apiKey, {
     ...options,
     body: {
      ...body,
@@ -34,13 +34,11 @@ class API {
      contactEmail: ""
     }
    });
-
-   // 
-
+    
    // Throw error if API status code is within 4XX and 5XX ranges
    if (apiResponse.statusCode >= 400) {
-    console.log(JSON.stringify(apiResponse));
-     throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+     console.log(JSON.stringify(apiResponse));
+     throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
    }
    // Main response
    const r = {
@@ -69,11 +67,11 @@ class API {
    const { url, options } = req.api;
 
    // Obtain list of currencies
-   const apiResponse = await rp.get(url + "/api/v1/currencies?active=true&fixedRate=true", { ...options });
+   const apiResponse = await rp.get(url + "/v1/currencies?active=true&fixedRate=true", { ...options });
 
    // Throw error if API response status range is within 4XX to 5XX
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
    
    // Main response
    const response = {
@@ -102,11 +100,11 @@ class API {
    const { ticker } = req.params;
 
    // Obtain currency info
-   const apiResponse = await rp.get(url + "/api/v1/currencies/" + ticker, { ...options });
+   const apiResponse = await rp.get(url + "/v1/currencies/" + ticker, { ...options });
 
    // Throw error if api response status code is within 4XX or 5XX
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
    
    // Main response
    const response = {
@@ -146,10 +144,9 @@ class API {
 
    // Obtain info
    const apiResponse = await rp.get(url + "/v1/min-amount/" + from+"_"+to, { ...options });
-
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
@@ -182,7 +179,7 @@ class API {
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
@@ -217,7 +214,7 @@ class API {
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
