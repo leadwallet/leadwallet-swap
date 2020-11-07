@@ -14,7 +14,7 @@ const normalizeAmbiguousTickers = (from_to) => {
    * In ChangeNow API for ERC20 tokens only USDT is ambiguous.
      So converting usdt to usdterc20
    */
-  const [ from, to ] = from_to.split("_");
+  let [ from, to ] = from_to.split("_");
    
   if(from.toLowerCase() === "usdt") 
    from += "erc20";
