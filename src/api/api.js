@@ -16,10 +16,10 @@ const normalizeAmbiguousTickers = (from_to) => {
    */
   const [ from, to ] = from_to.split("_");
    
-  if(from === "usdt") 
+  if(from.toLowerCase() === "usdt") 
    from += "erc20";
    
-  if(to === "usdt") 
+  if(to.toLowerCase() === "usdt") 
    to += "erc20";
    
   return [from, to];
