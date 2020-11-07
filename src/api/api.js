@@ -34,6 +34,8 @@ class API {
    // api object from request
    const { url, options, apiKey } = req.api;
 
+   console.log(f, t);
+
    // New body
    const body = { from: f, to: t, address, amount };
    
@@ -60,6 +62,8 @@ class API {
    const r = {
     ...apiResponse.body
    };
+
+   console.log(r);
 
    // Send response
    res.status(200).json({
