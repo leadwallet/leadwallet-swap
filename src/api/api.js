@@ -14,7 +14,7 @@ class API {
   try {
    // Parameters from request body
    const { from, to, address, amount } = req.body;
-
+   const [from,to] = this.normalizeAmbiguousTickers(from+"_"+to); 
    // api object from request
    const { url, options, apiKey } = req.api;
 
@@ -125,17 +125,27 @@ class API {
    });
   }
  }
-
+ static normalizeAmbiguousTickers(from_to) {
+    /*
+     In ChangeNow API for ERC20 tokens only USDT is ambiguous.
+     So converting usdt to usdterc20
+    */
+    let [from,to] = from_to.split("_");
+    if(from === "usdt") from += "erc20";
+    if(to === "usdt") to += "erc20";
+    return [from,to];
+ }
  static async getMinimalExchangeAmount(req, res) {
   try {
    // Get string from request parameter
    const { from_to } = req.params;
-
+    
    // Get request object
+   const [from, to] = this.normalizeAmbiguousTickers(from_to);
    const { url, options } = req.api;
 
    // Obtain info
-   const apiResponse = await rp.get(url + "/v1/min-amount/" + from_to, { ...options });
+   const apiResponse = await rp.get(url + "/v1/min-amount/" + from+"_"+to, { ...options });
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
@@ -166,9 +176,9 @@ class API {
 
    // Get request object
    const { url, options, apiKey } = req.api;
-
+   const [from, to] = this.normalizeAmbiguousTickers(from_to); 
    // Obtain info
-   const apiResponse = await rp.get(url + "/v1/exchange-amount/" + send_amount + "/" + from_to + `?api_key=${apiKey}`, { ...options });
+   const apiResponse = await rp.get(url + "/v1/exchange-amount/" + send_amount + "/" + from + "_" + to + `?api_key=${apiKey}`, { ...options });
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
