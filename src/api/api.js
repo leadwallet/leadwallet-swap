@@ -74,10 +74,7 @@ class API {
    });
    
   } catch (error) {
-   res.status(error.c || 500).json({
-    statusCode: error.c || 500,
-    response: error.message
-   });
+   res.status(error.c || 500).send(error.message);
   }
  }
 
@@ -104,10 +101,7 @@ class API {
     response
    });
   } catch (error) {
-   res.status(error.c || 500).json({
-    statusCode: error.c || 500,
-    response: error.message
-   });
+   res.status(error.c || 500).send(error.message);
   }
  }
 
@@ -137,10 +131,7 @@ class API {
     response
    });
   } catch (error) {
-   res.status(error.c || 500).json({
-    statusCode: error.c || 500,
-    response: error.message
-   });
+   res.status(error.c || 500).send(error.message);
   }
  }
  // static normalizeAmbiguousTickers(from_to) {
@@ -179,10 +170,7 @@ class API {
     response
    });
   } catch (error) {
-   res.status(error.c || 500).json({
-    statusCode: error.c || 500,
-    response: error.message
-   });
+   res.status(error.c || 500).send(error.message);
   }
  }
 
@@ -212,10 +200,7 @@ class API {
     response
    });
   } catch (error) {
-   res.status(error.c || 500).json({
-    statusCode: error.c || 500,
-    response: error.message
-   });
+   res.status(error.c || 500).send(error.message);
   }
  }
 
@@ -247,10 +232,7 @@ class API {
     response
    });
   } catch (error) {
-   res.status(error.c || 500).json({
-    statusCode: error.c || 500,
-    response: error.message
-   });
+   res.status(error.c || 500).send(error.message);
   }
  }
 }
