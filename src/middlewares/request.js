@@ -16,9 +16,6 @@ module.exports = (req, res, next) => {
   req.api = { url, options, apiKey };
   next();
  } catch (error) {
-  res.status(500).json({
-   statusCode: 500,
-   response: error.message
-  });
+  res.status(error.c || 500).send(error.message);
  }
 };
