@@ -155,10 +155,10 @@ class API {
 
    // Obtain info
    const apiResponse = await rp.get(url + "/v1/min-amount/" + from+"_"+to, { ...options });
-   console.log(apiResponse);
+   // console.log(apiResponse);
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(apiResponse.statusCode, apiResponse.body.error || `API responded with a ${apiResponse.statusCode}`);
 
    // Main response
    const response = {
