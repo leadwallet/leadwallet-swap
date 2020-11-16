@@ -1,5 +1,6 @@
 const rp = require("request-promise");
 const { CustomError } = require("../custom");
+const ExchangePairHandler = require("../middlewares/exchange_pair_handler");
 // const { CHANGENOW_API_KEY, CHANGENOW_API } = require("../env");
 
 // const options = {
@@ -235,6 +236,22 @@ class API {
   } catch (error) {
    res.status(error.c || 500).send(error.message);
   }
+ }
+ static async getExchangeSymbols(req, res) {
+	try {
+		const {from} = req.params;
+		const symbolList = await ExchangePairHandler.getExchangeList(from);
+		// Send response
+		res.status(200).json({
+			statusCode: 200,
+			response: symbolList
+		});
+	} catch (error) {
+			res.status(error.c || 500).json({
+			statusCode: error.c || 500,
+			response: error.message
+			});
+	}
  }
 }
 
