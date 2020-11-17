@@ -29,9 +29,10 @@ const ExchangePairHandler = (function() {
             to = "usdt";
         }
         if(exchangeMap.has(from)) {
-            exchangeMap.get(from).push(to);
+            exchangeMap.get(from).add(to);
         } else {
-            exchangeMap.set(from, new Array(to));
+            exchangeMap.set(from, new Set());
+            exchangeMap.get(from).add(to);
         }
       }
     }
@@ -44,7 +45,7 @@ const ExchangePairHandler = (function() {
             setInterval(async() => {refreshMap()}, 3600000);
         }
         if(exchangeMap.has(from)) {
-            return Promise.resolve(exchangeMap.get(from));
+            return Promise.resolve(Array.from(exchangeMap.get(from)));
         } else {
             return Promise.resolve([]);
         }
