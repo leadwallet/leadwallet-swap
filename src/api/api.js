@@ -10,20 +10,18 @@ const ExchangePairHandler = require("../middlewares/exchange_pair_handler");
 //  }
 // };
 
-const normalizeAmbiguousTickers = (from_to) => {
-  /**
+const normalizeAmbiguousTickers = from_to => {
+ /**
    * In ChangeNow API for ERC20 tokens only USDT is ambiguous.
      So converting usdt to usdterc20
    */
-  let [ from, to ] = from_to.split("_");
-   
-  if(from.toLowerCase() === "usdt") 
-   from += "erc20";
-   
-  if(to.toLowerCase() === "usdt") 
-   to += "erc20";
-   
-  return [from, to];
+ let [from, to] = from_to.split("_");
+
+ if (from.toLowerCase() === "usdt") from += "erc20";
+
+ if (to.toLowerCase() === "usdt") to += "erc20";
+
+ return [from, to];
 };
 
 class API {
@@ -31,7 +29,7 @@ class API {
   try {
    // Parameters from request body
    const { from, to, address, amount } = req.body;
-   const [ f, t ] = normalizeAmbiguousTickers(from + "_" + to); 
+   const [f, t] = normalizeAmbiguousTickers(from + "_" + to);
    // api object from request
    const { url, options, apiKey } = req.api;
 
@@ -39,7 +37,14 @@ class API {
 
    // New body
    const body = { from: f, to: t, address, amount };
-   
+
+   // Throw error if excahnge is made from or to BNB as client relies on the Smart Chain and ChangeNow does not support the Binance Smart Chain at the moment
+   if (body.from.toLowerCase() === "bnb" || body.to.toLowerCase() === "bnb")
+    throw new CustomError(
+     400,
+     "Binance Smart Chain swaps not supported at the moment"
+    );
+
    // ChangeNow exchange
    const apiResponse = await rp.post(url + "/v1/transactions/" + apiKey, {
     ...options,
@@ -53,11 +58,15 @@ class API {
      contactEmail: ""
     }
    });
-    
+
    // Throw error if API status code is within 4XX and 5XX ranges
    if (apiResponse.statusCode >= 400) {
-     console.log(JSON.stringify(apiResponse));
-     throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
+    console.log(JSON.stringify(apiResponse));
+    throw new CustomError(
+     apiResponse.statusCode,
+     apiResponse.body.message ||
+      `API responded with a ${apiResponse.statusCode}`
+    );
    }
    // Main response
    const r = {
@@ -73,7 +82,6 @@ class API {
      ...r
     }
    });
-   
   } catch (error) {
    res.status(error.c || 500).send(error.message);
   }
@@ -85,12 +93,19 @@ class API {
    const { url, options } = req.api;
 
    // Obtain list of currencies
-   const apiResponse = await rp.get(url + "/v1/currencies?active=true&fixedRate=true", { ...options });
+   const apiResponse = await rp.get(
+    url + "/v1/currencies?active=true&fixedRate=true",
+    { ...options }
+   );
 
    // Throw error if API response status range is within 4XX to 5XX
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
-   
+    throw new CustomError(
+     apiResponse.statusCode,
+     apiResponse.body.message ||
+      `API responded with a ${apiResponse.statusCode}`
+    );
+
    // Main response
    const response = {
     ...apiResponse.body
@@ -115,12 +130,18 @@ class API {
    const { ticker } = req.params;
 
    // Obtain currency info
-   const apiResponse = await rp.get(url + "/v1/currencies/" + ticker, { ...options });
+   const apiResponse = await rp.get(url + "/v1/currencies/" + ticker, {
+    ...options
+   });
 
    // Throw error if api response status code is within 4XX or 5XX
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
-   
+    throw new CustomError(
+     apiResponse.statusCode,
+     apiResponse.body.message ||
+      `API responded with a ${apiResponse.statusCode}`
+    );
+
    // Main response
    const response = {
     ...apiResponse.body
@@ -149,17 +170,22 @@ class API {
   try {
    // Get string from request parameter
    const { from_to } = req.params;
-    
+
    // Get request object
    const [from, to] = normalizeAmbiguousTickers(from_to);
    const { url, options } = req.api;
 
    // Obtain info
-   const apiResponse = await rp.get(url + "/v1/min-amount/" + from+"_"+to, { ...options });
+   const apiResponse = await rp.get(url + "/v1/min-amount/" + from + "_" + to, {
+    ...options
+   });
    // console.log(apiResponse);
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, apiResponse.body.error || `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(
+     apiResponse.statusCode,
+     apiResponse.body.error || `API responded with a ${apiResponse.statusCode}`
+    );
 
    // Main response
    const response = {
@@ -183,13 +209,27 @@ class API {
 
    // Get request object
    const { url, options, apiKey } = req.api;
-   const [from, to] = normalizeAmbiguousTickers(from_to); 
+   const [from, to] = normalizeAmbiguousTickers(from_to);
    // Obtain info
-   const apiResponse = await rp.get(url + "/v1/exchange-amount/" + send_amount + "/" + from + "_" + to + `?api_key=${apiKey}`, { ...options });
+   const apiResponse = await rp.get(
+    url +
+     "/v1/exchange-amount/" +
+     send_amount +
+     "/" +
+     from +
+     "_" +
+     to +
+     `?api_key=${apiKey}`,
+    { ...options }
+   );
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(
+     apiResponse.statusCode,
+     apiResponse.body.message ||
+      `API responded with a ${apiResponse.statusCode}`
+    );
 
    // Main response
    const response = {
@@ -215,13 +255,20 @@ class API {
    const { url, options, apiKey } = req.api;
 
    // Obtain info
-   const apiResponse = await rp.get(url + "/v1/transactions/" + id + "/" + apiKey, { ...options });
+   const apiResponse = await rp.get(
+    url + "/v1/transactions/" + id + "/" + apiKey,
+    { ...options }
+   );
 
    // console.log(apiResponse);
 
    // Throw error if any
    if (apiResponse.statusCode >= 400)
-    throw new CustomError(apiResponse.statusCode, apiResponse.body.message || `API responded with a ${apiResponse.statusCode}`);
+    throw new CustomError(
+     apiResponse.statusCode,
+     apiResponse.body.message ||
+      `API responded with a ${apiResponse.statusCode}`
+    );
 
    // Main response
    const response = {
@@ -238,20 +285,20 @@ class API {
   }
  }
  static async getExchangeSymbols(req, res) {
-	try {
-		const {from} = req.params;
-		const symbolList = await ExchangePairHandler.getExchangeList(from);
-		// Send response
-		res.status(200).json({
-			statusCode: 200,
-			response: symbolList
-		});
-	} catch (error) {
-			res.status(error.c || 500).json({
-			statusCode: error.c || 500,
-			response: error.message
-			});
-	}
+  try {
+   const { from } = req.params;
+   const symbolList = await ExchangePairHandler.getExchangeList(from);
+   // Send response
+   res.status(200).json({
+    statusCode: 200,
+    response: symbolList
+   });
+  } catch (error) {
+   res.status(error.c || 500).json({
+    statusCode: error.c || 500,
+    response: error.message
+   });
+  }
  }
 }
 

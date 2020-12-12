@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env DEBUG=logging node src/index"
+    "start": "cross-env DEBUG=logging node src/index",
+    "format": "prettier --config .prettierrc.json src/**/*.js --write"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "prettier": "^2.2.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   }
